@@ -7,7 +7,7 @@
 # |  |  |\    ||     ||     | |  | |     ||     |
 # |__|__| \___||_____| \__,_||____||_____||_____|
 #
-# NeverScape auto cross-platform client builder
+# Automated, cross-platform NeverScape client builder
 #
 
 import os
@@ -41,7 +41,7 @@ def execute(client, command):
     stdin, stdout, stderr = client.exec_command(command)
     exit_status = stdout.channel.recv_exit_status()
     if exit_status != 0:
-        print('Command Error.')
+        print('[!] Command Error.')
     return stdout
 
 
@@ -130,11 +130,11 @@ def main():
         client['sftp'].get(bin_path, client['bin'])
 
     # cleanup & finish
-    print(f'linux: Cleaning up')
+    print('linux: Cleaning up')
     os.system('chmod +x NeverScape.bin')
     execute(clients['linux']['ssh'], 'rm -rf /home/user/*')
 
-    print(f'windows: Cleaning up')
+    print('windows: Cleaning up')
     execute(
         clients['windows']['ssh'],
         'powershell.exe -Command "Remove-Item \'{0}\*\' -Recurse -Force"'.format(
