@@ -69,8 +69,8 @@ def main():
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
     mac_ip = config['settings']['mac_ip']
-    linux_ip = config['settings']['nix_ip']
-    windows_ip = config['settings']['win_ip']
+    linux_ip = config['settings']['linux_ip']
+    windows_ip = config['settings']['windows_ip']
 
     # zip client
     print('Zipping neverscape-client...')
@@ -109,13 +109,16 @@ def main():
     }
 
     for platform, client in clients.items():
+        # SFTP zipped client
         print(f'{platform}: SFTPing the zip')
         remote_zip_path = os.path.join(client['home'], 'nsbuild.zip')
         client['sftp'].put(ZIP_PATH, remote_zip_path)
 
+        # unzip client
         print(f'{platform}: Unzipping the client')
         execute(client['ssh'], f'unzip -o {remote_zip_path}')
 
+        # run PyInstaller
         print(f'{platform}: Building client!')
         sub_path = f'neverscape-client/build_{platform}.spec'
         spec_path = os.path.join(client['home'], sub_path)
@@ -123,6 +126,7 @@ def main():
             spec_path = spec_path.replace('/', '\\')
         execute(client['ssh'], f'pyinstaller {spec_path}')
 
+        # SFTP binary
         print(f'{platform}: SFTPing the binary')
         bin_path = os.path.join(client['home'], 'dist/main')
         if platform == 'windows':

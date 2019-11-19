@@ -13,7 +13,7 @@ $ cat ~/.nsbuild_config
 [settings]
 windows_ip = 192.168.1.75
 linux_ip = 192.168.1.76
-macos_ip = 192.168.1.77
+mac_ip = 192.168.1.77
 ```
 
 Usage:
